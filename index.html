@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        let vocab = ['します',
+            'ききます',
+            "きます",
+            "かきます",
+            "はたらきます",
+            "およぎます",
+            "いぞぎます",
+            "のみます",
+            "よみます",
+            "よびます",
+            "あいます",
+            "かいます",
+            "てつだいます",
+            "うたいます",
+            "まちます",
+            "もちます",
+            "けります",
+            "とります",
+            "あります",
+            "つくります",
+            "はいります",
+            "はなします",
+            "けします",
+
+            "たべます",
+            "ねます",
+            "でます",
+            "みせます",
+            "おしえます",
+            "とめます",
+            "あけます",
+            "しめます",
+            "はきめます",
+            "つけます",
+            "かけます",
+            "あげます",
+
+            "つかれます",
+            "います",
+            "みます",
+            "おきます",
+            "かります",
+            "べんきょします",
+            "けっこんします",
+            "コピーします",
+
+        ]
+        let rules = [
+            ["えます","えて"],
+            ["べます","べて"],
+            ["ねます","ねて"],
+            ["でます","でて"],
+            ["せます","せて"],
+            ["けます","けて"],
+            ["げます","げて"],
+            ["めます","めて"],
+
+            ["します","して"],
+            ["みます","んで"],
+            ["びます","んで"],
+            ["にます","んで"],
+            ["きます","いて"],
+            ["ぎます","いで"],
+            ["います","って"],
+            ["ります","って"],
+            ["ちます","って"]
+        ]
+        let exceptions = [
+            ["いきます","いって"],
+            ["きます","きて"],
+            ["みます","みて"],
+            ["おります","おりて"],
+        ]
+　        let current = {
+            question: "",
+            answer: ""
+        }
+
+        function getRandom(max) {
+            return Math.floor(Math.random() * max);
+        }
+        function reset(){
+            document.getElementById("cor").style.display="none";
+            let y = document.getElementById("wro");
+            y.style.display="none";
+            y.textContent = "Leider falsch. Lösung: ";
+        }
+        function generateQuestion(){
+            document.getElementById("answer").value="";
+            let x = getRandom(vocab.length);
+            current.question = vocab[x]
+            current.answer = generateAnswer(vocab[x]);
+            reset();
+            let out = document.getElementById("question").textContent = current.question;
+        }
+
+        function generateAnswer(ques){
+            for(let exc of exceptions){
+                if(ques===exc[0]){
+                    return exc[1];
+                }
+            }
+
+            for(let rule of rules){
+                if(ques.endsWith(rule[0])){
+                    let x = ques.lastIndexOf(rule[0]);
+                    return ques.substring(0,x) + rule[1];
+                }
+            }
+
+            return "error";
+        }
+
+        function checkAnswer(){
+            reset();
+            console.log(document.getElementById("answer"));
+            if(document.getElementById("answer").value === current.answer){
+                document.getElementById("cor").style.display="initial";
+            } else {
+                let x = document.getElementById("wro")
+                x.textContent += current.answer;
+
+                x.style.display="inline";
+
+            }
+        }
+
+        function addvocab() {
+            console.log("addvocab");
+            let NewVocab = document.getElementById("new").value;
+            vocab.push(NewVocab);
+            if (document.getElementById("excepRule").value !== "") {
+                let exception = document.getElementById("excepRule").value;
+                exceptions.push([vocab, exception]);
+            }
+            document.getElementById("new").value = "";
+            document.getElementById("excepRule").value = "";
+            document.getElementById("new").placeholder = "Success";
+        }
+
+    </script>
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 300%;
+        }
+        #answer, #new, #excepRule{
+            font-size:100%;
+        }
+        .but{
+            font-size:80%;
+        }
+        .newVocab{
+            padding:5px;
+            border:thin black solid;
+            margin-top: 20%;
+        }
+        input{
+            margin: 2px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="main">
+    <p id="question"></p>
+    <label for="answer"> Antwort:</label>
+    <input id="answer" type="text"/>
+    <p>
+        <p id="cor"> Richtig! </p>
+        <p id="wro"> Leider falsch. Lösung: </p>
+    </p>
+    <p>
+        <input type="button" class="but" onclick="checkAnswer()" value="Prüfen">
+        <input type="button" class="but" onclick="generateQuestion()" value="Nächstes">
+    </p>
+    <p class="newVocab">
+        <label for="new">Neue Vokabel</label><input type="text" id="new"/> <br>
+        <label for="excepRule">Te-Form (nur bei Ausnahmen):</label><input type="text" id="excepRule"/> <br>
+        <input type="button" class="but" value="Hinzufügen" onclick="addvocab()">
+    </p>
+</div>
+<script>
+    generateQuestion();
+</script>
+</body>
+</html>
